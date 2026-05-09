@@ -1,0 +1,7 @@
+node_modules/
+dist/
+release/
+data/lazzat.db
+__pycache__/
+*.pyc
+.DS_Store

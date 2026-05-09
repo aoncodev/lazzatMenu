@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lazzat Menu Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <header class="bg-white shadow">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <h1 class="text-xl font-bold text-gray-800" data-i18n="title">Lazzat Menu Calculator</h1>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleLang()" id="lang-toggle"
+          class="px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200">RU</button>
+        <nav class="flex gap-2">
+          <button onclick="showTab('ingredients')" id="tab-ingredients"
+            class="px-4 py-2 rounded font-medium text-sm bg-indigo-600 text-white" data-i18n="tab_ingredients">Ingredients</button>
+          <button onclick="showTab('menu')" id="tab-menu"
+            class="px-4 py-2 rounded font-medium text-sm bg-gray-200 text-gray-700" data-i18n="tab_menu">Menu</button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6">
+    <!-- Error banner -->
+    <div id="error-banner" class="hidden mb-4 p-3 bg-red-100 border border-red-300 text-red-800 rounded"></div>
+
+    <!-- Ingredients tab -->
+    <div id="page-ingredients">
+      <div class="bg-white rounded shadow p-4 mb-4">
+        <h2 class="text-lg font-semibold mb-3" data-i18n="add_ingredient">Add Ingredient</h2>
+        <form id="ingredient-form" class="flex flex-wrap gap-2 items-end">
+          <div>
+            <label class="block text-xs text-gray-500" data-i18n="name">Name</label>
+            <input name="name" required class="border rounded px-2 py-1 text-sm w-32">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500" data-i18n="category">Category</label>
+            <select name="category" class="border rounded px-2 py-1 text-sm">
+              <option value="weight" data-i18n="weight">Weight</option>
+              <option value="volume" data-i18n="volume">Volume</option>
+              <option value="count" data-i18n="count">Count</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500" data-i18n="display_unit">Display Unit</label>
+            <select name="display_unit" class="border rounded px-2 py-1 text-sm">
+              <option value="kg">kg</option>
+              <option value="g">g</option>
+              <option value="L">L</option>
+              <option value="ml">ml</option>
+              <option value="piece" data-i18n="piece">piece</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500" data-i18n="price_krw">Price (KRW)</label>
+            <input name="price_in_display_unit" type="number" step="any" required class="border rounded px-2 py-1 text-sm w-28">
+          </div>
+          <button type="submit" class="bg-indigo-600 text-white px-4 py-1 rounded text-sm font-medium" data-i18n="add">Add</button>
+        </form>
+      </div>
+      <div class="bg-white rounded shadow overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="text-left px-4 py-2" data-i18n="name">Name</th>
+              <th class="text-left px-4 py-2" data-i18n="category">Category</th>
+              <th class="text-left px-4 py-2" data-i18n="unit">Unit</th>
+              <th class="text-right px-4 py-2" data-i18n="price_krw">Price (KRW)</th>
+              <th class="text-right px-4 py-2" data-i18n="updated">Updated</th>
+              <th class="px-4 py-2"></th>
+            </tr>
+          </thead>
+          <tbody id="ingredients-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Menu tab -->
+    <div id="page-menu" class="hidden">
+      <div class="mb-4">
+        <button onclick="showMenuForm()" id="btn-add-menu" class="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-medium" data-i18n="add_menu_item">
+          + Add Menu Item
+        </button>
+      </div>
+
+      <!-- Add/Edit menu form -->
+      <div id="menu-form-container" class="hidden bg-white rounded shadow p-4 mb-4">
+        <h2 class="text-lg font-semibold mb-3" id="menu-form-title" data-i18n="add_menu_item">Add Menu Item</h2>
+        <form id="menu-form" class="space-y-3">
+          <input type="hidden" name="edit_id">
+          <div class="flex flex-wrap gap-2">
+            <div>
+              <label class="block text-xs text-gray-500" data-i18n="name">Name</label>
+              <input name="name" required class="border rounded px-2 py-1 text-sm w-40">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500" data-i18n="portions">Portions</label>
+              <input name="portions" type="number" min="1" required class="border rounded px-2 py-1 text-sm w-20">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500" data-i18n="sell_price">Sell Price (KRW)</label>
+              <input name="sell_price" type="number" step="any" required class="border rounded px-2 py-1 text-sm w-28">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500" data-i18n="target_margin">Target Margin %</label>
+              <input name="target_margin_pct" type="number" step="any" class="border rounded px-2 py-1 text-sm w-20">
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-gray-500 font-medium" data-i18n="recipe_items">Recipe Items</label>
+              <button type="button" onclick="addRecipeRow()" class="text-xs text-indigo-600 font-medium" data-i18n="add_row">+ Add Row</button>
+            </div>
+            <div id="recipe-rows" class="space-y-1"></div>
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-1 rounded text-sm font-medium" data-i18n="save">Save</button>
+            <button type="button" onclick="hideMenuForm()" class="bg-gray-200 text-gray-700 px-4 py-1 rounded text-sm font-medium" data-i18n="cancel">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="menu-cards" class="grid gap-4"></div>
+    </div>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

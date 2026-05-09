@@ -1,0 +1,66 @@
+{
+  "name": "lazzat-menu",
+  "version": "1.0.0",
+  "description": "Lazzat Menu Calculator — recipe cost calculator for restaurants",
+  "main": "dist/main.js",
+  "author": "Lazzat",
+  "license": "MIT",
+  "scripts": {
+    "build:backend": "tsc",
+    "build:frontend": "cd ../frontend && npm run build",
+    "build:all": "npm run build:frontend && npm run build:backend",
+    "start": "npm run build:all && electron .",
+    "dist:win": "npm run build:all && electron-builder --win",
+    "dist:mac": "npm run build:all && electron-builder --mac",
+    "dist": "npm run build:all && electron-builder --win --mac"
+  },
+  "build": {
+    "appId": "com.lazzat.menu",
+    "productName": "Lazzat Menu",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "!dist/frontend",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../frontend/dist",
+        "to": "frontend",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": null
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": null
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false
+    }
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.9.1",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.4",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.3",
+    "electron": "^36.4.0",
+    "electron-builder": "^26.0.12",
+    "typescript": "~5.7.0"
+  }
+}
